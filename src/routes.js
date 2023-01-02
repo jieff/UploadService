@@ -6,8 +6,12 @@ const Post = require('./models/Post');
 
 
 routes.get('/posts', async (req, res) => {
-    const post =await Post.find();
+    const post = await Post.find();
+    return res.json(post);
+});
 
+routes.get('/post/:id', async(req, res) => {
+    const post = await Post.findById(req.params.id);   
     return res.json(post);
 });
 
