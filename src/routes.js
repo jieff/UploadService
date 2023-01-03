@@ -15,11 +15,11 @@ routes.get('/post/:id', async(req, res) => {
     return res.json(post);
 });
 
-routes.post('/posts', multer(multerConfig).single('file'), async (req, res) => {
-    const { originalname: name, size, key, location: url = "", test = ""} = req.file;
+routes.post('/posts/:id', multer(multerConfig).single('file'), async (req, res) => {
+    const { originalname: name, size, key, location: url = ""} = req.file;
 
     const post = await Post.create({
-        test,
+        user: req.params.id,
         name,
         size,
         key,
