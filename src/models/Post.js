@@ -7,8 +7,9 @@ const { promisify } = require('util');
 const s3 = new aws.S3();
 
 const PostSchema = new mongoose.Schema({
-    user: String,
+    user: Number,
     name: String,
+    type: String,
     size: Number,
     key: String,
     url: String,
