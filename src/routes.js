@@ -1,8 +1,40 @@
 const routes = require('express').Router();
 const multer = require('multer');
 const multerConfig = require('./config/multer');
+const axios = require('axios');
 
 const Post = require('./models/Post');
+const Wish = require('./models/Wish')
+
+/**Begin:Wish */
+routes.post('/wish', multer(multerConfig).single('file'), async (req, res) => {
+    const { originalname: name, size, key, location: url = ""} = req.file;
+    const wish = await Wish.create({
+        user: req.headers.user,
+        description : req.headers.description,
+        status: req.headers.status,
+        type: 'wish',
+        name,
+        size,
+        key,
+        url
+    });
+    return res.json(wish);
+});
+routes.delete('/wish/:id', async(req, res) => {
+    const wish = await Wish.findById(req.params.id);
+    
+    await wish.remove();
+    
+    return res.send();
+});
+
+routes.get('/wish', async(req, res) => {
+    const wish = await Wish.find();
+    return res.json(wish);
+});
+
+/**End:Wish */
 
 /**Begin:Post */
 routes.get('/posts', async (req, res) => {
@@ -17,22 +49,16 @@ routes.get('/post/:user', async(req, res) => {
 routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = ""} = req.file;
 
-    const data = {
-        wish_name: "nome do desejo test node",
-        wish_description: "nome da descriptio",
-        wish_status: 4,
-        wish_url: "url test",
-    }
+    //axios({
+    //    method: "get",
+    //    url: "http://172.20.49.196:8080/api/v1/resize",
+    //    data: {
+    //        "path_thumbnail":"/home/jieff/uploadexample/backend",
+    //        "height": 140
+    //    }
+//
+    //});
 
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data),
-    };
-
-    //fetch('http://172.17.146.5:8080/api/v1/add_wish', options)
 
     const post = await Post.create({
         user: req.params.id,
