@@ -29,7 +29,7 @@ WishSchema.pre('save', function(){
 WishSchema.pre('remove', function(){
     if(process.env.STORAGE_TYPE ==='s3') {
         return s3.deleteObject({
-            Bucket: 'realy',
+            Bucket: 'realynew',
             key: this.key,
         }).promise()
     } else {
