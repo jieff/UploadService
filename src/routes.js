@@ -21,6 +21,16 @@ routes.post('/wish', multer(multerConfig).single('file'), async (req, res) => {
     });
     return res.json(wish);
 });
+
+routes.get('/wish/:user', async(req, res) => {
+
+    const { user } = req.params;
+
+    const data = await Wish.find({ user});
+    return res.json(data);
+});
+
+
 routes.delete('/wish/:id', async(req, res) => {
     const wish = await Wish.findById(req.params.id);
     
@@ -73,7 +83,7 @@ routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req,
 routes.delete('/posts/:id', async(req, res) => {
     const post = await Post.findById(req.params.id);
 
-    await post.remove();
+    await post.deleteOne(post);
     
     return res.send();
 });
