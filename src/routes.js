@@ -80,10 +80,10 @@ routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req,
     });
     return res.json(post);
 });
-routes.delete('/posts/:id', async(req, res) => {
+routes.delete('/posts/:id', multer(multerConfig).fields(), async(req, res) => {
     const post = await Post.findById(req.params.id);
 
-    await post.deleteOne(post);
+    await post.deleteOne();
     
     return res.send();
 });

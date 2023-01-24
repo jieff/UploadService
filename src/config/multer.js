@@ -21,7 +21,7 @@ const storageTypes = {
     }),
     s3: multerS3({
         s3: new aws.S3(),
-        bucket: 'realynew',
+        bucket: process.env.BUCKET_NAME,
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: 'public-read',
         key: (req, file, cb) => {
@@ -41,7 +41,7 @@ module.exports = {
     dest: path.resolve(__dirname, '..', '..', 'tmp', 'uploads'),
     storage: storageTypes[process.env.STORAGE_TYPE],
     limits: {
-        fileSize: 2 * 1024 * 1024,
+        fileSize: process.env.MAX_SIZE_MEGABYTES,
     },
     fileFilter: (req, file, cb) => {
         const allowedMimes = [
