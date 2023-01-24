@@ -10,6 +10,7 @@ const Wish = require('./models/Wish')
 routes.post('/wish', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = ""} = req.file;
     const wish = await Wish.create({
+        box: req.headers.box,
         user: req.headers.user,
         description : req.headers.description,
         status: req.headers.status,
@@ -32,11 +33,10 @@ routes.get('/wish/:user', async(req, res) => {
 
 
 routes.delete('/wish/:id', async(req, res) => {
-    const wish = await Wish.findById(req.params.id);
+    const wish = await Wish.findById(req.params.id);  
+    await wish.deleteOne();
     
-    await wish.remove();
-    
-    return res.send();
+    return res.json({ "message": 'Deleted with successfylly'});
 });
 
 routes.get('/wish', async(req, res) => {
