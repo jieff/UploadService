@@ -6,7 +6,7 @@ const { promisify } = require('util');
 
 const s3 = new aws.S3();
 
-const PostSchema = new mongoose.Schema({
+const AvatarSchema = new mongoose.Schema({
     user: Number,
     name: String,
     type: String,
@@ -19,13 +19,13 @@ const PostSchema = new mongoose.Schema({
     },
 });
 
-PostSchema.pre('save', function(){
+AvatarSchema.pre('save', function(){
     if(!this.url){
         this.url = `${process.env.APP_URL}/files/${this.key}`;
     }
 });
 
-PostSchema.pre('remove', function(){
+AvatarSchema.pre('remove', function(){
     if(process.env.STORAGE_TYPE ==='s3') {
         return s3.deleteObject({
             Bucket: process.env.BUCKET_NAME,
@@ -39,4 +39,4 @@ PostSchema.pre('remove', function(){
     }
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Avatar', AvatarSchema);

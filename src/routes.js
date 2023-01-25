@@ -3,8 +3,9 @@ const multer = require('multer');
 const multerConfig = require('./config/multer');
 const axios = require('axios');
 
-const Post = require('./models/Post');
-const Wish = require('./models/Wish')
+const Avatar = require('./models/Avatar');
+const Wish = require('./models/Wish');
+const { exists } = require('./models/Avatar');
 
 /**Begin:Wish */
 routes.post('/wish', multer(multerConfig).single('file'), async (req, res) => {
@@ -47,17 +48,21 @@ routes.get('/wish', async(req, res) => {
 
 /**End:Wish */
 
-/**Begin:Post */
-routes.get('/posts', async (req, res) => {
-    const post = await Post.find();
-    return res.json(post);
+
+
+
+
+/**Begin:Avatar */
+routes.get('/avatar', async (req, res) => {
+    const avatar = await Avatar.find();
+    return res.json(avatar);
 });
-routes.get('/post/:user', async(req, res) => {
+routes.get('/avatar/:user', async(req, res) => {
     const { user} = req.params;
-    const data = await Post.find({user});
+    const data = await Avatar.find({user});
     return res.json(data);
 });
-routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req, res) => {
+routes.post('/avatar/:user', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = ""} = req.file;
 
     //axios({
@@ -70,48 +75,57 @@ routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req,
 //
     //});
 
+   // const result  = await Avatar.find(req.params.user);
 
-    const post = await Post.create({
-        user: req.params.id,
-        type: req.params.type,
+
+    //return res.json(result);
+
+        //return res.json({'message': 'Avatar already exists!!'})
+
+    const avatar = await Avatar.create({
+        user: req.params.user,
+        type: 'avatar',
         name,
         size,
         key,
         url
     });
-    return res.json(post);
+
+    return res.json(avatar);
+    
+    
 });
 
-routes.put('/posts/:id', multer(multerConfig).single('file'), async (req, res) => {
+routes.put('/avatar/:id', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = "" } = req.file;
 
-    const post = await Post.findById(req.params.id);
+    const avatar = await Avatar.findById(req.params.id);
 
-    const newpost = await Post.create({
-        user: post.user,
-        type: post.type,
+    const newAvatar = await Avatar.create({
+        user: avatar.user,
+        type: 'avatar',
         name,
         size,
         key,
         url
     });
 
-    await post.remove();
+    await avatar.remove();
 
-    return res.json(newpost);
+    return res.json(newAvatar);
 
 });
 
-routes.delete('/posts/:id', async(req, res) => {
-    const post = await Post.findById(req.params.id);
+routes.delete('/avatar/:id', async(req, res) => {
+    const avatar = await Avatar.findById(req.params.id);
 
-    await post.remove();
+    await avatar.remove();
     
-    return res.send();
+    return res.json({'message': 'Deleted with successfylly'})
 });
 
 routes.get('/search/:user/:type', async (req, res) => {
-    const type = await Post.find({user: req.params.user, type: req.params.type});
+    const type = await Avatar.find({user: req.params.user, type: req.params.type});
     return res.send(type);
 });
 /**End:Post */
