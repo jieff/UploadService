@@ -34,7 +34,8 @@ routes.get('/wish/:user', async(req, res) => {
 
 routes.delete('/wish/:id', async(req, res) => {
     const wish = await Wish.findById(req.params.id);  
-    await wish.deleteOne();
+
+    await wish.remove();
     
     return res.json({ "message": 'Deleted with successfylly'});
 });
@@ -80,10 +81,31 @@ routes.post('/posts/:id/:type', multer(multerConfig).single('file'), async (req,
     });
     return res.json(post);
 });
-routes.delete('/posts/:id', multer(multerConfig).fields(), async(req, res) => {
+
+routes.put('/posts/:id', multer(multerConfig).single('file'), async (req, res) => {
+    const { originalname: name, size, key, location: url = "" } = req.file;
+
     const post = await Post.findById(req.params.id);
 
-    await post.deleteOne();
+    const newpost = await Post.create({
+        user: post.user,
+        type: post.type,
+        name,
+        size,
+        key,
+        url
+    });
+
+    await post.remove();
+
+    return res.json(newpost);
+
+});
+
+routes.delete('/posts/:id', async(req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    await post.remove();
     
     return res.send();
 });

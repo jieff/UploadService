@@ -27,12 +27,19 @@ WishSchema.pre('save', function(){
     }
 });
 
-WishSchema.pre('remove', function(){
+WishSchema.pre('deleteOne', async () => {
     if(process.env.STORAGE_TYPE ==='s3') {
         return s3.deleteObject({
-            Bucket: 'realynew',
-            key: this.key,
-        }).promise()
+            Bucket: process.env.BUCKET_NAME,
+            key: this.key
+        })
+        .promise()
+        .then((response) =>{
+            console.log(response.status);
+        })
+        .catch((response) => {
+            console.log(response.status);
+        });
     } else {
         return promisify(fs.unlink)(path.resolve(__dirname, '..','..', 'tmp', 'uploads', this.key ));
     }
