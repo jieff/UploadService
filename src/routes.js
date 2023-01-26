@@ -111,8 +111,8 @@ routes.put('/avatar/:user', multer(multerConfig).single('file'), async (req, res
     
 });
 
-routes.delete('/avatar/:id', async(req, res) => {
-    const avatar = await Avatar.findById(req.params.id);
+routes.delete('/avatar/:user', async(req, res) => {
+    const avatar = await Avatar.findOneAndDelete(req.params.user);
 
     await avatar.remove();
     
