@@ -5,7 +5,6 @@ const axios = require('axios');
 
 const Avatar = require('./models/Avatar');
 const Wish = require('./models/Wish');
-const { exists } = require('./models/Avatar');
 
 /**Begin:Wish */
 routes.post('/wish', multer(multerConfig).single('file'), async (req, res) => {
@@ -96,13 +95,11 @@ routes.post('/avatar/:user', multer(multerConfig).single('file'), async (req, re
     
 });
 
-routes.put('/avatar/:id', multer(multerConfig).single('file'), async (req, res) => {
+routes.put('/avatar/:user', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = "" } = req.file;
 
-    const avatar = await Avatar.findById(req.params.id);
-
-    const newAvatar = await Avatar.create({
-        user: avatar.user,
+    await Avatar.findOneAndUpdate({
+        user: req.params.user,
         type: 'avatar',
         name,
         size,
@@ -110,10 +107,8 @@ routes.put('/avatar/:id', multer(multerConfig).single('file'), async (req, res) 
         url
     });
 
-    await avatar.remove();
-
-    return res.json(newAvatar);
-
+    return res.json({'message': 'Update successfully'});
+    
 });
 
 routes.delete('/avatar/:id', async(req, res) => {
