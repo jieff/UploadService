@@ -3,6 +3,7 @@ const aws = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
+const mongoosePaginate = require('mongoose-paginate');
 
 const s3 = new aws.S3();
 
@@ -45,4 +46,5 @@ WishSchema.pre('deleteOne', async () => {
     }
 });
 
+WishSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Wish', WishSchema);
