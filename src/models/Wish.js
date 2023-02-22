@@ -8,14 +8,16 @@ const mongoosePaginate = require('mongoose-paginate');
 const s3 = new aws.S3();
 
 const WishSchema = new mongoose.Schema({
-    box : String,
-    user: String,
+    author: String,
     description: String,
     status: Number,
-    type: String,
     size: Number,
     key: String,
     url: String,
+    avatar: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Avatar'
+    },
     createAt: {
         type: Date,
         default: Date.now,

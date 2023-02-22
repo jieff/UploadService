@@ -17,7 +17,8 @@ app.use(express.urlencoded({ extended: true}));
 app.use(morgan('dev'));
 app.use("/files", express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
 
-app.use(require("./routes"));
+app.use(require("./routes/avatar"));
+app.use(require("./routes/wish"));
 
 app.listen(3000);
 

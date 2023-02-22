@@ -1,68 +1,15 @@
 const routes = require('express').Router();
 const multer = require('multer');
-const multerConfig = require('./config/multer');
+const multerConfig = require('../config/multer');
 const axios = require('axios');
 
-const Avatar = require('./models/Avatar');
-const Wish = require('./models/Wish');
-
-/**Begin:Wish */
-routes.get('/wish/:user', async(req, res) => {
-
-    const { user } = req.params;
-
-    const data = await Wish.find({ user});
-    return res.json(data);
-});
-
-
-routes.delete('/wish/:id', async(req, res) => {
-    const wish = await Wish.findById(req.params.id);  
-
-    await wish.remove();
-    
-    return res.json({ "message": 'Deleted with successfylly'});
-});
-
-routes.get('/wish', async(req, res) => {
-
-    const { _limit, _page } = req.query;
-    const options = {
-        page: parseInt(_page, 10),
-        limit: parseInt(_limit, 10),
-    };
-
-    const wish = await Wish.paginate({}, options);
-    return res.json(wish);
-});
-routes.post('/wish/:user', multer(multerConfig).single('file'), async (req, res) => {
-    const { originalname: name, size, key, location: url = ""} = req.file;
-    const wish = await Wish.create({
-        box: req.headers.box,
-        user: req.headers.user,
-        description : req.headers.description,
-        status: req.headers.status,
-        type: 'wish',
-        name,
-        size,
-        key,
-        url
-    });
-    return res.json(wish);
-});
-
-/**End:Wish */
-
-
-
-
+const Avatar = require('../models/Avatar');
 
 /**Begin:Avatar */
-routes.post('/avatar/:user', multer(multerConfig).single('file'), async (req, res) => {
+routes.post('/avatar/:author', multer(multerConfig).single('file'), async (req, res) => {
     const { originalname: name, size, key, location: url = ""} = req.file;
     const avatar = await Avatar.create({
-        user: req.params.user,
-        type: 'avatar',
+        author: req.params.author,
         name,
         size,
         key,

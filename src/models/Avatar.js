@@ -7,9 +7,8 @@ const { promisify } = require('util');
 const s3 = new aws.S3();
 
 const AvatarSchema = new mongoose.Schema({
-    user: Number,
+    author: Number,
     name: String,
-    type: String,
     size: Number,
     key: String,
     url: String,
